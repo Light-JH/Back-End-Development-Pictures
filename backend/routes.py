@@ -35,7 +35,15 @@ def count():
 ######################################################################
 @app.route("/picture", methods=["GET"])
 def get_pictures():
-    pass
+    if not data:
+        return {'message':'no pictures'}, 400
+    urls=[]
+    for picture in data:
+        urls.append(picture["pic_url"])
+    return urls, 200 
+
+
+    
 
 ######################################################################
 # GET A PICTURE
@@ -44,20 +52,32 @@ def get_pictures():
 
 @app.route("/picture/<int:id>", methods=["GET"])
 def get_picture_by_id(id):
-    pass
+    for pic in data:
+        if pic["id"] == id:
+            return pic, 200
+    return {'message': "the picture is not found"}, 404
+        
 
 
 ######################################################################
 # CREATE A PICTURE
 ######################################################################
-@app.route("/picture", methods=["POST"])
+@app.route("/picture/<int:id>", methods=["POST"])
 def create_picture():
-    pass
+    new_pic = request.json
+    ID = request.args.get('id')
+    if not new_pic:
+        return {'message': "no picture posted"}, 400
+    for pic in data:
+        if pic['id'] == ID:
+            return {'message': f"picture with id {pic['id']} already present"}, 302
+        else:
+            data.append(new_pic)
+            return {'message': "picture added"}, 200
 
 ######################################################################
 # UPDATE A PICTURE
 ######################################################################
-
 
 @app.route("/picture/<int:id>", methods=["PUT"])
 def update_picture(id):
